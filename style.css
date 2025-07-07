@@ -200,7 +200,7 @@ body {
 .month-item.selected,
 .year-item.selected {
   background-color: pink;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .year-item.other-decade {
