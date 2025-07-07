@@ -141,15 +141,28 @@ body {
 }
 
 .calendar-days span.selected {
+  background-color: rgb(75, 73, 75);
+  color: #ffffff;
+  box-shadow: 0 0 0 1px pink;
+}
+
+.calendar-days span.today {
   background-color: pink;
-  color: rgb(0, 0, 0);
+  color: #000000;
+  box-shadow: 0 0 0 1px #fefefe;
+}
+.calendar-days span.today.selected {
+  background-color: pink; 
+  color: #000000; 
+  box-shadow: 0 0 0 1px #f7fbff;
 }
 
 .months-grid,
 .years-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
+  padding: 10px;
   text-align: center;
   animation: fadeIn 0.3s ease-out;
 }
@@ -167,6 +180,15 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.95em;
+}
+
+.month-item.other-year-month {
+    opacity: 0.5; 
+    color: #666;    
+}
+
+.empty-cell {
+    visibility: hidden;
 }
 
 .month-item:hover,
@@ -248,7 +270,6 @@ body {
 }
 
 .calendar-container::after {
-  content: "↕ Scroll to navigate • ↔ Swipe to change • ↑↓ Change view";
   position: absolute;
   bottom: -25px;
   left: 50%;
@@ -278,7 +299,6 @@ body {
 
 @media (max-width: 480px) {
   .calendar-container::after {
-    content: "Swipe to navigate • Tap to select";
     font-size: 9px;
   }
 

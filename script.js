@@ -13,7 +13,7 @@ const decadeView = document.querySelector(".calendar-decade-view")
 const viewModeToggle = document.querySelector(".current-date-toggle")
 const currentDateHeader = document.querySelector(".current-date")
 
-const currentDate = new Date()
+let currentDate = new Date()
 let currentView = "month"
 
 const months = [
@@ -67,81 +67,106 @@ function updateHeaderDate() {
 }
 
 function renderMonthView() {
-  calendarDaysGrid.innerHTML = ""
-  const year = currentDate.getFullYear()
-  const month = currentDate.getMonth()
+    calendarDaysGrid.innerHTML = ""
+    const year = currentDate.getFullYear()
+    const month = currentDate.getMonth()
 
-  currentMonthYearDisplay.textContent = `${months[month]} ${year}`
+    currentMonthYearDisplay.textContent = `${months[month]} ${year}`
 
-  const firstDayOfMonth = new Date(year, month, 1)
-  const lastDayOfMonth = new Date(year, month + 1, 0)
-  const lastDayPrevMonth = new Date(year, month, 0)
-  const numDaysInMonth = lastDayOfMonth.getDate()
-  const firstWeekday = firstDayOfMonth.getDay()
+    const firstDayOfMonth = new Date(year, month, 1)
+    const lastDayOfMonth = new Date(year, month + 1, 0)
+    const lastDayPrevMonth = new Date(year, month, 0)
+    const numDaysInMonth = lastDayOfMonth.getDate()
+    const firstWeekday = firstDayOfMonth.getDay()
 
-  for (let i = firstWeekday; i > 0; i--) {
-    const day = lastDayPrevMonth.getDate() - i + 1
-    const daySpan = document.createElement("span")
-    daySpan.textContent = day
-    daySpan.classList.add("other-month")
-    calendarDaysGrid.appendChild(daySpan)
-  }
+    const today = new Date()
+    const isCurrentMonth = (month === today.getMonth() && year === today.getFullYear())
+    const currentSelectedDay = currentDate.getDate() 
 
-  const today = new Date()
-  for (let i = 1; i <= numDaysInMonth; i++) {
-    const daySpan = document.createElement("span")
-    daySpan.textContent = i
-    daySpan.classList.add("day")
-
-    if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-      daySpan.classList.add("selected")
+    for (let i = firstWeekday; i > 0; i--) {
+        const day = lastDayPrevMonth.getDate() - i + 1
+        const daySpan = document.createElement("span")
+        daySpan.textContent = day
+        daySpan.classList.add("other-month")
+        calendarDaysGrid.appendChild(daySpan)
     }
 
-    daySpan.addEventListener("click", () => {
-      console.log(`You clicked on: ${i}/${month + 1}/${year}`)
-      document.querySelectorAll(".calendar-days .selected").forEach((el) => el.classList.remove("selected"))
-      daySpan.classList.add("selected")
-      currentDate.setFullYear(year, month, i)
-      updateHeaderDate()
-    })
+    for (let i = 1; i <= numDaysInMonth; i++) {
+        const daySpan = document.createElement("span")
+        daySpan.textContent = i
+        daySpan.classList.add("day")
 
-    calendarDaysGrid.appendChild(daySpan)
-  }
+        if (i === today.getDate() && isCurrentMonth) {
+            daySpan.classList.add("today")
+        }
 
-  const totalDaysDisplayed = firstWeekday + numDaysInMonth
-  const remainingCells = 42 - totalDaysDisplayed
+        if (i === currentSelectedDay && month === currentDate.getMonth() && year === currentDate.getFullYear()) {
+            daySpan.classList.add("selected")
+        }
 
-  for (let i = 1; i <= remainingCells; i++) {
-    const daySpan = document.createElement("span")
-    daySpan.textContent = i
-    daySpan.classList.add("other-month")
-    calendarDaysGrid.appendChild(daySpan)
-  }
+        daySpan.addEventListener("click", () => {
+            document.querySelectorAll(".calendar-days .selected").forEach((el) => {
+                el.classList.remove("selected")
+            })
+            daySpan.classList.add("selected")
+
+            currentDate.setFullYear(year, month, i)
+            updateHeaderDate()
+        })
+
+        calendarDaysGrid.appendChild(daySpan)
+    }
+
+    const totalDaysDisplayed = firstWeekday + numDaysInMonth
+    const remainingCells = 42 - totalDaysDisplayed
+
+    for (let i = 1; i <= remainingCells; i++) {
+        const daySpan = document.createElement("span")
+        daySpan.textContent = i
+        daySpan.classList.add("other-month")
+        calendarDaysGrid.appendChild(daySpan)
+    }
 }
 
 function renderYearView() {
-  monthsGrid.innerHTML = ""
-  const year = currentDate.getFullYear()
-  currentYearDisplay.textContent = year
+    monthsGrid.innerHTML = "";
+    const year = currentDate.getFullYear();
+    currentYearDisplay.textContent = year;
 
-  const today = new Date()
-  shortMonths.forEach((monthName, index) => {
-    const monthItem = document.createElement("span")
-    monthItem.textContent = monthName
-    monthItem.classList.add("month-item")
+    const today = new Date();
 
-    if (index === today.getMonth() && year === today.getFullYear()) {
-      monthItem.classList.add("selected")
+    shortMonths.forEach((monthName, index) => {
+        const monthItem = document.createElement("span");
+        monthItem.textContent = monthName;
+        monthItem.classList.add("month-item");
+
+        if (index === today.getMonth() && year === today.getFullYear()) {
+            monthItem.classList.add("selected");
+        }
+
+        monthItem.addEventListener("click", () => {
+            currentDate.setMonth(index); 
+            currentView = "month";
+            renderCalendar();
+        });
+
+        monthsGrid.appendChild(monthItem);
+    });
+
+    for (let i = 0; i < 4; i++) { 
+        const monthItem = document.createElement("span");
+        monthItem.textContent = shortMonths[i];
+        monthItem.classList.add("month-item", "other-year-month"); 
+        
+        monthItem.addEventListener("click", () => {
+            currentDate.setFullYear(year + 1); 
+            currentDate.setMonth(i); 
+            currentView = "month";
+            renderCalendar();
+        });
+
+        monthsGrid.appendChild(monthItem);
     }
-
-    monthItem.addEventListener("click", () => {
-      currentDate.setMonth(index)
-      currentView = "month"
-      renderCalendar()
-    })
-
-    monthsGrid.appendChild(monthItem)
-  })
 }
 
 function renderDecadeView() {
@@ -153,37 +178,52 @@ function renderDecadeView() {
   currentDecadeDisplay.textContent = `${startDecade} - ${endDecade}`
 
   const today = new Date()
+
   for (let i = startDecade - 1; i <= endDecade + 1; i++) {
-    const yearItem = document.createElement("span")
-    yearItem.textContent = i
-    yearItem.classList.add("year-item")
+        const yearItem = document.createElement("span");
+        yearItem.textContent = i;
+        yearItem.classList.add("year-item");
 
-    if (i < startDecade || i > endDecade) {
-      yearItem.classList.add("other-decade")
+        if (i < startDecade || i > endDecade) {
+            yearItem.classList.add("other-decade"); 
+        }
+
+        if (i === today.getFullYear()) {
+            yearItem.classList.add("selected");
+        }
+
+        yearItem.addEventListener("click", () => {
+            currentDate.setFullYear(i);
+            currentView = "year";
+            renderCalendar();
+        });
+
+        yearsGrid.appendChild(yearItem);
     }
 
-    if (i === today.getFullYear()) {
-      yearItem.classList.add("selected")
+    for (let i = 1; i <= 4; i++) { 
+        const nextYear = endDecade + 1 + i;
+        const yearItem = document.createElement("span");
+        yearItem.textContent = nextYear;
+        yearItem.classList.add("year-item", "other-decade"); 
+
+        yearItem.addEventListener("click", () => {
+            currentDate.setFullYear(nextYear);
+            currentView = "year";
+            renderCalendar();
+        });
+        yearsGrid.appendChild(yearItem);
     }
-
-    yearItem.addEventListener("click", () => {
-      currentDate.setFullYear(i)
-      currentView = "year"
-      renderCalendar()
-    })
-
-    yearsGrid.appendChild(yearItem)
-  }
 }
 
 navUpBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     if (currentView === "month") {
-      currentDate.setMonth(currentDate.getMonth() + 1)
+      currentDate.setMonth(currentDate.getMonth() - 1)
     } else if (currentView === "year") {
-      currentDate.setFullYear(currentDate.getFullYear() + 1)
+      currentDate.setFullYear(currentDate.getFullYear() - 1)
     } else if (currentView === "decade") {
-      currentDate.setFullYear(currentDate.getFullYear() + 10)
+      currentDate.setFullYear(currentDate.getFullYear() - 10)
     }
     renderCalendar()
   })
@@ -192,11 +232,11 @@ navUpBtns.forEach((btn) => {
 navDownBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     if (currentView === "month") {
-      currentDate.setMonth(currentDate.getMonth() - 1)
+      currentDate.setMonth(currentDate.getMonth() + 1)
     } else if (currentView === "year") {
-      currentDate.setFullYear(currentDate.getFullYear() - 1)
+      currentDate.setFullYear(currentDate.getFullYear() + 1)
     } else if (currentView === "decade") {
-      currentDate.setFullYear(currentDate.getFullYear() - 10)
+      currentDate.setFullYear(currentDate.getFullYear() + 10)
     }
     renderCalendar()
   })
@@ -223,16 +263,11 @@ currentDecadeDisplay.addEventListener("click", () => {
   }
 })
 
-viewModeToggle.addEventListener("click", () => {
-  if (currentView === "month") {
-    currentView = "year"
-  } else if (currentView === "year") {
-    currentView = "decade"
-  } else {
-    currentView = "month"
-  }
-  renderCalendar()
-})
+currentDateHeader.addEventListener("click", () => {
+    currentDate = new Date(); 
+    currentView = "month";
+    renderCalendar();
+});
 
 let timer = null
 let totalSeconds = 30 * 60
