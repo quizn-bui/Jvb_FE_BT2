@@ -16,36 +16,40 @@ body {
   width: 400px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
-  user-select: none; 
+  user-select: none;
 }
 
 .calendar-header {
   align-items: flex-start;
   background-color: #1b1b1b;
   padding: 15px 15px;
+  border-bottom: solid 1px #101010;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 }
 
 .icon-down {
   color: white;
-    border-radius: 4px;
-    padding: 3px 5px;
-    background-color: #333;
-    border: solid 1.5px #484545;
+  border-radius: 4px;
+  padding: 3px 5px;
+  background-color: #333;
+  border: solid 1.5px #484545;
 }
 
 .calendar-body {
   background-color: #1e1e21;
-  padding: 20px;
-  border-bottom: solid 2px #101010;
-  border-top: solid 2px #101010;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.calendar-body.hidden {
+  display: none;
 }
 
 .current-date {
   font-size: 15px;
   font-weight: normal;
-  color: #f0f0f0; 
+  color: #f0f0f0;
 }
 
 .current-date-toggle {
@@ -70,10 +74,11 @@ body {
 }
 
 .navigation {
+  padding-left: 7px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 15px;
+  margin-bottom: 30px;
   font-size: 16px;
   font-weight: bold;
 }
@@ -96,23 +101,25 @@ body {
 }
 
 .weekdays {
+  gap: 15px;
   font-weight: bold;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   font-size: 0.85em;
   color: #ccc;
 }
 
 .weekdays span {
-  padding: 5px 0;
+  padding: 0 0;
 }
 
 .calendar-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+  column-gap: 15px;
+  row-gap: 10px;
   text-align: center;
   animation: fadeIn 0.3s ease-out;
 }
@@ -151,9 +158,10 @@ body {
   color: #000000;
   box-shadow: 0 0 0 1px #fefefe;
 }
+
 .calendar-days span.today.selected {
-  background-color: pink; 
-  color: #000000; 
+  background-color: pink;
+  color: #000000;
   box-shadow: 0 0 0 1px #f7fbff;
 }
 
@@ -183,12 +191,12 @@ body {
 }
 
 .month-item.other-year-month {
-    opacity: 0.5; 
-    color: #666;    
+  opacity: 0.5;
+  color: #666;
 }
 
 .empty-cell {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .month-item:hover,
@@ -223,7 +231,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 14px;
+  border-top: solid 1px #101010;
+  padding: 14px;
 }
 
 .footer-actions button {
@@ -301,7 +310,6 @@ body {
   .calendar-container::after {
     font-size: 9px;
   }
-
   .calendar-days span,
   .month-item,
   .year-item {
